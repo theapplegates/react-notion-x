@@ -1,37 +1,67 @@
 {
-  "name": "notion-x-example-full",
-  "version": "6.16.0",
+  "name": "notion",
   "private": true,
-  "type": "commonjs",
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "analyze": "cross-env ANALYZE=true next build",
-    "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
-    "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build",
-    "deploy": "vercel deploy"
+  "description": "Fast and accurate React renderer for Notion. TS batteries included.",
+  "repository": "NotionX/react-notion-x",
+  "author": "Travis Fischer <travis@transitivebullsh.it>",
+  "license": "MIT",
+  "version": "6.15.8",
+  "engines": {
+    "node": ">=12"
   },
-  "dependencies": {
-    "@notionhq/client": "^1.0.4",
-    "classnames": "^2.3.1",
-    "got": "^12.0.2",
-    "lqip-modern": "^1.2.0",
-    "next": "^12.1.0",
-    "notion-client": "^6.16.0",
-    "notion-compat": "^6.16.0",
-    "notion-utils": "^6.16.0",
-    "p-map": "^5.3.0",
-    "p-memoize": "^6.0.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-notion-x": "^6.16.0",
-    "react-tweet-embed": "^2.0.0"
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "build": "run-s build:*",
+    "build:tsc": "tsc --build",
+    "build:tsup": "lerna run build --no-private",
+    "watch": "run-p watch:* --continue-on-error",
+    "watch:tsc": "tsc --build --watch  --preserveWatchOutput",
+    "watch:tsup": "lerna run watch --no-private --parallel",
+    "link": "lerna exec \"yarn link\" --no-private",
+    "dev": "run-s watch",
+    "prebuild": "run-s clean",
+    "prewatch": "run-s clean",
+    "clean": "del packages/*/build",
+    "pretest": "run-s build",
+    "test": "run-p test:*",
+    "test:unit": "lerna run test",
+    "test:eslint": "eslint '**/*.{ts,tsx}'",
+    "test:prettier": "prettier '**/*.{js,jsx,ts,tsx}' --check",
+    "bootstrap": "lerna bootstrap",
+    "predeploy": "run-s build",
+    "deploy": "lerna publish",
+    "preinstall": "node -e \"if (process.env.npm_execpath.indexOf('yarn') < 0) throw new Error('this package requires yarn for development')\"",
+    "postinstall": "run-s bootstrap",
+    "prepare": "husky install",
+    "pre-commit": "lint-staged"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^12.1.0",
-    "@types/node": "^16.11.2",
-    "cross-env": "^7.0.3",
-    "typescript": "^4.6.2"
+    "@trivago/prettier-plugin-sort-imports": "^3.3.1",
+    "@types/node": "^18.11.0",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "ava": "^4.1.0",
+    "del-cli": "^4.0.1",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-react": "^7.31.10",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.1",
+    "lerna": "^4.0.0",
+    "lint-staged": "^12.3.6",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.7.1",
+    "ts-node": "^10.9.1",
+    "tsup": "^6.2.3",
+    "typescript": "^4.8.4"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }
